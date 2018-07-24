@@ -1,7 +1,7 @@
 # Exercise #15: Recover Middleware using Chroma library
 
 ## Exercise details
-This exercise is used to navigate to any source file in the panic stacktrace in order to make it easier to debug issues when panics get invoked.
+This is my version of [Gophercise 15](https://github.com/gophercises/recover_chroma).This exercise is used to navigate to any source file in the panic stacktrace in order to make it easier to debug issues when panics get invoked.
 
 Above repository contains following functions:
 
