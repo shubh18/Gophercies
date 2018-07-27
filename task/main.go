@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"path/filepath"
 	"task/commands"
 	"task/db"
@@ -17,9 +18,9 @@ func main() {
 func initApplication() error {
 	home, _ := homedir.Dir()
 	DbPath := filepath.Join(home, "cmd.db")
-	err := db.InitDB(DbPath)
+	_, err := db.InitDB(DbPath)
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 	return err
 }

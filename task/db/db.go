@@ -17,13 +17,13 @@ type Task struct {
 }
 
 //InitDB initialises Database
-func InitDB(DBString string) error {
+func InitDB(DBString string) (*bolt.DB, error) {
 	var err error
 	dbconnect, err = bolt.Open(DBString, 0600, &bolt.Options{Timeout: 1 * time.Second})
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return dbconnect.Update(func(tx *bolt.Tx) error {
+	return dbconnect, dbconnect.Update(func(tx *bolt.Tx) error {
 		_, err = tx.CreateBucketIfNotExists(taskBucket)
 		return err
 	})

@@ -6,14 +6,14 @@ import (
 )
 
 func TestInitDBNegative(t *testing.T) {
-	err := InitDB("/home/cmd.db")
+	_, err := InitDB("/home/cmd.db")
 	if err == nil {
 		t.Error("Expected err got,", nil)
 	}
 
 }
 func TestInitDB(t *testing.T) {
-	err := InitDB("/home/gslab/cmd.db")
+	_, err := InitDB("/home/gslab/cmd.db")
 	if err != nil {
 		t.Error("Expected nil got,", err)
 	}
