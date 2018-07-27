@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
-	vault "secret/vault"
+	secret "secret/vault"
 )
 
 func main() {
-	v := vault.NewVault("key1")
-	err := v.Set("demo-key", "Shubham-Malshikare")
+	v := secret.File("key1", ".secrets")
+	err := v.Set("demo_key1", "Shubham Malshikare")
 	if err != nil {
 		panic(err)
 	}
-	plain, err := v.Get("demo-key")
+	plain, err := v.Get("demo_key1")
 	if err != nil {
 		panic(err)
 	}

@@ -1,46 +1,101 @@
-package vault
+package secret
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	encrypt "secret/encrypt"
+	"io"
+	"os"
+	"strings"
+	"sync"
+
+	"secret/encrypt"
 )
 
-//NewVault creates vault to store keys
-func NewVault(encodingKey string) Vault {
-	return Vault{
+func File(encodingKey, filepath string) *Vault {
+	return &Vault{
 		encodingKey: encodingKey,
-		keyValues:   make(map[string]string),
+		filepath:    filepath,
 	}
 }
 
-//Vault struct is representation of Vault
 type Vault struct {
 	encodingKey string
+	filepath    string
+	mutex       sync.Mutex
 	keyValues   map[string]string
 }
 
-//Get to get decrypted text
-func (v *Vault) Get(key string) (string, error) {
-	hex, ok := v.keyValues[key]
-	if !ok {
-		return "", errors.New("secret:no value for key")
-	}
-	ret, err := encrypt.Decrypt(hex, v.encodingKey)
+func (v *Vault) loadKeyValues() error {
+	f, err := os.Open(v.filepath)
 	if err != nil {
-		fmt.Println("Content not Decrypted")
+		v.keyValues = make(map[string]string)
+		return nil
 	}
-	fmt.Println(ret)
-	return ret, nil
+	defer f.Close()
+	var sb strings.Builder
+	_, err = io.Copy(&sb, f)
+	if err != nil {
+		return err
+	}
+	decryptedJSON, err := encrypt.Decrypt(v.encodingKey, sb.String())
+	if err != nil {
+		return err
+	}
+	r := strings.NewReader(decryptedJSON)
+	dec := json.NewDecoder(r)
+	err = dec.Decode(&v.keyValues)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-//Set to decrypt plain text
-func (v *Vault) Set(key, value string) error {
-	encryptedValue, err := encrypt.Encrypt(v.encodingKey, value)
+func (v *Vault) saveKeyValues() error {
+	var sb strings.Builder
+	enc := json.NewEncoder(&sb)
+	err := enc.Encode(v.keyValues)
 	if err != nil {
-		fmt.Println("Nothing to encrypt")
-
+		return err
 	}
-	v.keyValues[key] = encryptedValue
+	encryptedJSON, err := encrypt.Encrypt(v.encodingKey, sb.String())
+	if err != nil {
+		return err
+	}
+	f, err := os.OpenFile(v.filepath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = fmt.Fprint(f, encryptedJSON)
+	if err != nil {
+		return err
+	}
 	return nil
+}
+
+func (v *Vault) Get(key string) (string, error) {
+	v.mutex.Lock()
+	defer v.mutex.Unlock()
+	err := v.loadKeyValues()
+	if err != nil {
+		return "", err
+	}
+	value, ok := v.keyValues[key]
+	if !ok {
+		return "", errors.New("secret: no value for that key")
+	}
+	return value, nil
+}
+
+func (v *Vault) Set(key, value string) error {
+	v.mutex.Lock()
+	defer v.mutex.Unlock()
+	err := v.loadKeyValues()
+	if err != nil {
+		return err
+	}
+	v.keyValues[key] = value
+	err = v.saveKeyValues()
+	return err
 }
