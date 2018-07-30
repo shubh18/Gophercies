@@ -2,18 +2,23 @@ package db
 
 import (
 	"fmt"
+	"path/filepath"
 	"testing"
+
+	homedir "github.com/mitchellh/go-homedir"
 )
 
 func TestInitDBNegative(t *testing.T) {
-	_, err := InitDB("/home/cmd.db")
+	_, err := InitDB("/")
 	if err == nil {
 		t.Error("Expected err got,", nil)
 	}
 
 }
 func TestInitDB(t *testing.T) {
-	_, err := InitDB("/home/gslab/cmd.db")
+	home, _ := homedir.Dir()
+	DbPath := filepath.Join(home, "cmd.db")
+	_, err := InitDB(DbPath)
 	if err != nil {
 		t.Error("Expected nil got,", err)
 	}
