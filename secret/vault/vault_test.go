@@ -11,7 +11,7 @@ import (
 //TestFile basic test case
 func TestVault(t *testing.T) {
 	home, _ := homedir.Dir()
-	filePath := filepath.Join(home, "test.secrets")
+	filePath := filepath.Join(home, ".test.secrets")
 
 	v := NewVault("test", filePath)
 	assert.Equal(t, "test", v.encodingKey)

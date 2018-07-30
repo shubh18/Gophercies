@@ -44,7 +44,7 @@ func TestDecrypt(t *testing.T) {
 
 func TestDecryptReader(t *testing.T) {
 	home, _ := homedir.Dir()
-	file := filepath.Join(home, "test.secrets")
+	file := filepath.Join(home, ".test.secrets")
 	v := NewVault("test", file)
 	f, err := os.Open(file)
 	if err != nil {
