@@ -59,5 +59,17 @@ func TestDecryptReader(t *testing.T) {
 }
 
 func TestEncryptWriter(t *testing.T) {
+	home, _ := homedir.Dir()
+	file := filepath.Join(home, ".test.secrets")
+	v := NewVault("test", file)
+	f, err := os.OpenFile(v.filepath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		fmt.Println("TestEncryptWriter:", err)
+	}
+	defer f.Close()
+	writer, err := EncryptWriter(v.encodingKey, f)
+	if err != nil {
+		t.Error("Expected Writer got", writer)
+	}
 
 }

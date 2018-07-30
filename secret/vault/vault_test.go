@@ -5,27 +5,46 @@ import (
 	"testing"
 
 	homedir "github.com/mitchellh/go-homedir"
-	"github.com/stretchr/testify/assert"
 )
 
-//TestFile basic test case
-func TestVault(t *testing.T) {
+func getSecretpath() string {
 	home, _ := homedir.Dir()
-	filePath := filepath.Join(home, ".test.secrets")
-
-	v := NewVault("test", filePath)
-	assert.Equal(t, "test", v.encodingKey)
-
-	key1 := "key1"
-	value1 := "value1"
-	_ = v.SetKey(key1, value1)
-
-	answer1, _ := v.GetValue(key1)
-	assert.Equal(t, answer1, value1)
-
-	s, err := v.GetValue("")
-	if err == nil {
-		t.Error("Expected nil got", s)
+	return filepath.Join(home, ".test.secrets")
+}
+func TestSet(t *testing.T) {
+	testSuit := []struct {
+		encodingKey string
+		filepath    string
+		key         string
+		plainText   string
+	}{
+		{encodingKey: "123", filepath: getSecretpath(), key: "twitter", plainText: "hello"},
 	}
+	for _, test := range testSuit {
+		v := NewVault(test.encodingKey, test.filepath)
+		err := v.SetKey(test.key, test.plainText)
+		if err != nil {
+			t.Error("error in Set")
+		}
+	}
+}
 
+func TestGet(t *testing.T) {
+	testSuit := []struct {
+		encodingKey string
+		filepath    string
+		key         string
+		plainText   string
+	}{
+		{encodingKey: "123", filepath: getSecretpath(), key: "twitter", plainText: "hello"},
+		{encodingKey: "123", filepath: getSecretpath() + "ds", key: "twitter", plainText: ""},
+		{encodingKey: "123", filepath: getSecretpath(), key: "google", plainText: ""},
+	}
+	for _, test := range testSuit {
+		v := NewVault(test.encodingKey, test.filepath)
+		plainText, _ := v.GetValue(test.key)
+		if plainText != test.plainText {
+			t.Error("error in Get")
+		}
+	}
 }
