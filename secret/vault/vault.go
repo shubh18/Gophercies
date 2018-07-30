@@ -3,22 +3,14 @@ package secret
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"os"
-	"strings"
 	"sync"
 
-	"secret/encrypt"
+	"secret/cipher"
 )
 
-func File(encodingKey, filepath string) *Vault {
-	return &Vault{
-		encodingKey: encodingKey,
-		filepath:    filepath,
-	}
-}
-
+// Vault is public struct
 type Vault struct {
 	encodingKey string
 	filepath    string
@@ -26,76 +18,84 @@ type Vault struct {
 	keyValues   map[string]string
 }
 
-func (v *Vault) loadKeyValues() error {
+// NewVault is thin simple method for creating new Vault
+func NewVault(key, path string) *Vault {
+	return &Vault{
+		encodingKey: key,
+		filepath:    path,
+	}
+}
+
+func (v *Vault) readKeyValues(r io.Reader) error {
+	dec := json.NewDecoder(r)
+	return dec.Decode(&v.keyValues)
+}
+
+//It loads vault and if the map does not exist it creates one using calling make()
+func (v *Vault) load() error {
 	f, err := os.Open(v.filepath)
 	if err != nil {
 		v.keyValues = make(map[string]string)
 		return nil
 	}
 	defer f.Close()
-	var sb strings.Builder
-	_, err = io.Copy(&sb, f)
+
+	reader, err := cipher.DecryptReader(v.encodingKey, f)
 	if err != nil {
 		return err
 	}
-	decryptedJSON, err := encrypt.Decrypt(v.encodingKey, sb.String())
-	if err != nil {
-		return err
-	}
-	r := strings.NewReader(decryptedJSON)
-	dec := json.NewDecoder(r)
-	err = dec.Decode(&v.keyValues)
-	if err != nil {
-		return err
-	}
-	return nil
+
+	return v.readKeyValues(reader)
 }
 
-func (v *Vault) saveKeyValues() error {
-	var sb strings.Builder
-	enc := json.NewEncoder(&sb)
-	err := enc.Encode(v.keyValues)
-	if err != nil {
-		return err
-	}
-	encryptedJSON, err := encrypt.Encrypt(v.encodingKey, sb.String())
-	if err != nil {
-		return err
-	}
+//save function writes encoding key to vault
+func (v *Vault) save() error {
 	f, err := os.OpenFile(v.filepath, os.O_RDWR|os.O_CREATE, 0755)
 	if err != nil {
 		return err
 	}
 	defer f.Close()
-	_, err = fmt.Fprint(f, encryptedJSON)
+
+	w, err := cipher.EncryptWriter(v.encodingKey, f)
 	if err != nil {
 		return err
 	}
-	return nil
+	return v.writeKeyValues(w)
 }
 
-func (v *Vault) Get(key string) (string, error) {
+func (v *Vault) writeKeyValues(w io.Writer) error {
+	enc := json.NewEncoder(w)
+	return enc.Encode(v.keyValues)
+}
+
+//SetKey is used for storing key:value pair in Vault.
+//It is thread safe.
+func (v *Vault) SetKey(key, value string) error {
 	v.mutex.Lock()
 	defer v.mutex.Unlock()
-	err := v.loadKeyValues()
+
+	err := v.load()
+	if err != nil {
+		return err
+	}
+	v.keyValues[key] = value
+	err = v.save()
+	return err
+}
+
+//GetValue is used for retriving value for a specified key.
+func (v *Vault) GetValue(key string) (string, error) {
+	v.mutex.Lock()
+	defer v.mutex.Unlock()
+
+	err := v.load()
 	if err != nil {
 		return "", err
 	}
+
 	value, ok := v.keyValues[key]
 	if !ok {
 		return "", errors.New("secret: no value for that key")
 	}
 	return value, nil
-}
-
-func (v *Vault) Set(key, value string) error {
-	v.mutex.Lock()
-	defer v.mutex.Unlock()
-	err := v.loadKeyValues()
-	if err != nil {
-		return err
-	}
-	v.keyValues[key] = value
-	err = v.saveKeyValues()
-	return err
 }
