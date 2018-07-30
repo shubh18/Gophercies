@@ -17,7 +17,7 @@ var setCmd = &cobra.Command{
 		key, value := args[0], args[1]
 		err := v.SetKey(key, value)
 		if err != nil {
-			panic(err)
+			return
 		}
 		fmt.Println("Value set successfully!")
 	},
