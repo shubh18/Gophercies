@@ -62,12 +62,14 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoadNegative(t *testing.T) {
-	file := secretpath()
-	vault := NewVault("", file)
+	home, _ := homedir.Dir()
+	file := filepath.Join(home, "")
+	vault := NewVault("abc", file)
 	err := vault.load()
 	if err == nil {
-		t.Error("Expected error but got nil")
+		t.Error("Expected error but got nil", err)
 	}
+	os.Remove(file)
 }
 func TestSave(t *testing.T) {
 	var v Vault

@@ -11,11 +11,12 @@ import (
 )
 
 func encryptStream(key string, iv []byte) (cipher.Stream, error) {
+	var cipherKey cipher.Stream
 	block, err := newCipherBlock(key)
-	if err != nil {
-		return nil, err
+	if err == nil {
+		cipherKey = cipher.NewCFBEncrypter(block, iv)
 	}
-	return cipher.NewCFBEncrypter(block, iv), nil
+	return cipherKey, err
 }
 
 // EncryptWriter will return a writer that will write encrypted data to
@@ -32,11 +33,12 @@ func EncryptWriter(key string, w io.Writer) (*cipher.StreamWriter, error) {
 }
 
 func decryptStream(key string, iv []byte) (cipher.Stream, error) {
+	var cipherKey cipher.Stream
 	block, err := newCipherBlock(key)
-	if err != nil {
-		return nil, err
+	if err == nil {
+		cipherKey = cipher.NewCFBDecrypter(block, iv)
 	}
-	return cipher.NewCFBDecrypter(block, iv), nil
+	return cipherKey, err
 }
 
 // DecryptReader will return a reader that will decrypt data from the
@@ -47,15 +49,11 @@ func DecryptReader(key string, r io.Reader) (*cipher.StreamReader, error) {
 	n, err := r.Read(iv)
 	//apart from nil check we should also ensure that
 	//number of bytes that are read must be 16
-	//
 	if n < len(iv) || err != nil {
 		return nil, errors.New("encrypt: unable to read the full iv")
 	}
 	stream, err := decryptStream(key, iv)
-	if err != nil {
-		return nil, err
-	}
-	return &cipher.StreamReader{S: stream, R: r}, nil
+	return &cipher.StreamReader{S: stream, R: r}, err
 }
 
 //newCipherBlock return cipher block containing hashed version of key

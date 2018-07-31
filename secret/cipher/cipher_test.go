@@ -55,3 +55,16 @@ func TestEncryptWriter(t *testing.T) {
 	}
 
 }
+
+func TestDecryptReaderNegative(t *testing.T) {
+	home, _ := homedir.Dir()
+	file := filepath.Join(home, "test_secret.txt")
+
+	f, _ := os.Open(file)
+	defer f.Close()
+	_, err := DecryptReader("abc", f)
+	if err == nil {
+		t.Error("Expected error but got no error")
+	}
+	os.Remove(file)
+}

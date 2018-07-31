@@ -31,12 +31,12 @@ func TestSetCommand(t *testing.T) {
 	file.Close()
 }
 
-/*
 func TestSetCommandNegative(t *testing.T) {
 	file, _ := os.OpenFile("testing.txt", os.O_CREATE|os.O_RDWR, 0666)
 	oldStdout := os.Stdout
 	os.Stdout = file
-	a := []string{" ", " "}
+	encodingKey = "1234"
+	a := []string{" ", " ", " "}
 	setCmd.Run(setCmd, a)
 	file.Seek(0, 0)
 	content, err := ioutil.ReadAll(file)
@@ -44,7 +44,7 @@ func TestSetCommandNegative(t *testing.T) {
 		t.Error("error occured while test case : ", err)
 	}
 	output := string(content)
-	val := strings.Contains(output, "index out of range")
+	val := strings.Contains(output, "")
 	assert.Equalf(t, true, val, "they should be equal")
 	file.Truncate(0)
 	file.Seek(0, 0)
@@ -52,4 +52,3 @@ func TestSetCommandNegative(t *testing.T) {
 	fmt.Println(string(content))
 	file.Close()
 }
-*/
