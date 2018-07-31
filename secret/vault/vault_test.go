@@ -7,7 +7,7 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-func getSecretpath() string {
+func secretpath() string {
 	home, _ := homedir.Dir()
 	return filepath.Join(home, ".test.secrets")
 }
@@ -18,7 +18,7 @@ func TestSet(t *testing.T) {
 		key         string
 		plainText   string
 	}{
-		{encodingKey: "123", filepath: getSecretpath(), key: "twitter", plainText: "hello"},
+		{encodingKey: "demokey", filepath: secretpath(), key: "secret", plainText: "hello"},
 	}
 	for _, test := range testSuit {
 		v := NewVault(test.encodingKey, test.filepath)
@@ -36,9 +36,8 @@ func TestGet(t *testing.T) {
 		key         string
 		plainText   string
 	}{
-		{encodingKey: "123", filepath: getSecretpath(), key: "twitter", plainText: "hello"},
-		{encodingKey: "123", filepath: getSecretpath() + "ds", key: "twitter", plainText: ""},
-		{encodingKey: "123", filepath: getSecretpath(), key: "google", plainText: ""},
+		{encodingKey: "demokey", filepath: secretpath(), key: "secret", plainText: "hello"},
+		{encodingKey: "demokey", filepath: secretpath(), key: "picasso", plainText: ""},
 	}
 	for _, test := range testSuit {
 		v := NewVault(test.encodingKey, test.filepath)

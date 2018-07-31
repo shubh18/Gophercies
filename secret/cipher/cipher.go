@@ -11,11 +11,6 @@ import (
 	"io"
 )
 
-//Using as it is code from gophercises
-// nothing to add or modify
-//this code is very specific to internals of encrption and decryption  of
-// streams
-
 func encryptStream(key string, iv []byte) (cipher.Stream, error) {
 	block, err := newCipherBlock(key)
 	if err != nil {
@@ -114,6 +109,7 @@ func DecryptReader(key string, r io.Reader) (*cipher.StreamReader, error) {
 	return &cipher.StreamReader{S: stream, R: r}, nil
 }
 
+//newCipherBlock return cipher block containing hashed version of key
 func newCipherBlock(key string) (cipher.Block, error) {
 	hasher := md5.New()
 	fmt.Fprint(hasher, key)
