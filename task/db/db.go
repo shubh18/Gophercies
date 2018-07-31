@@ -16,7 +16,7 @@ type Task struct {
 	Value string
 }
 
-//InitDB initialises Database
+//InitDB initialises Database and creates task bucket if not already present.
 func InitDB(DBString string) (*bolt.DB, error) {
 	var err error
 	dbconnect, err = bolt.Open(DBString, 0600, &bolt.Options{Timeout: 1 * time.Second})
@@ -31,7 +31,7 @@ func InitDB(DBString string) (*bolt.DB, error) {
 }
 
 //CreateTask creates task in boltDB
-func CreateTask(task string) (int, error) {
+func CreateTask(task string) error {
 	var taskID int
 	err := dbconnect.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket(taskBucket)
@@ -40,10 +40,8 @@ func CreateTask(task string) (int, error) {
 		key := IntToByte(taskID)
 		return b.Put(key, []byte(task))
 	})
-	if err != nil {
-		return -1, err
-	}
-	return 0, nil
+
+	return err
 
 }
 

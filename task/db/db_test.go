@@ -26,10 +26,10 @@ func TestInitDB(t *testing.T) {
 }
 
 func TestCreateTask(t *testing.T) {
-	var i int
-	i, _ = CreateTask("Work on Golang")
-	if i != 0 {
-		t.Error("Expected 0,nil got", i)
+
+	err := CreateTask("Work on Golang")
+	if err != nil {
+		t.Error("Expected nil got", err)
 	}
 }
 

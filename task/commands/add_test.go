@@ -1,7 +1,6 @@
 package commands
 
 import (
-	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -33,7 +32,7 @@ func TestAddCommand(t *testing.T) {
 	file.Truncate(0)
 	file.Seek(0, 0)
 	os.Stdout = oldStdout
-	fmt.Println(string(content))
+	//fmt.Println(string(content))
 	file.Close()
 	dbconnect.Close()
 

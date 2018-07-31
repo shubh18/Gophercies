@@ -15,7 +15,7 @@ var addCommand = &cobra.Command{
 	Example: "task add Read Golang Tutorial",
 	Run: func(command *cobra.Command, args []string) {
 		task := strings.Join(args, " ")
-		_, err := db.CreateTask(task)
+		err := db.CreateTask(task)
 		if err != nil {
 			fmt.Println(err)
 		}

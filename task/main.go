@@ -10,17 +10,12 @@ import (
 )
 
 func main() {
-	initApplication()
-	commands.RootCmd.Execute()
-
-}
-
-func initApplication() error {
 	home, _ := homedir.Dir()
 	DbPath := filepath.Join(home, "cmd.db")
 	_, err := db.InitDB(DbPath)
 	if err != nil {
 		fmt.Println(err)
 	}
-	return err
+	commands.RootCmd.Execute()
+
 }

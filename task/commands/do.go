@@ -19,14 +19,13 @@ var doCommand = &cobra.Command{
 		for _, arg := range args {
 			id, err := strconv.Atoi(arg)
 			if err != nil {
-				fmt.Println("Failed to parse the argument:", arg)
-			} else {
-				ids = append(ids, id)
+				return
 			}
+			ids = append(ids, id)
 		}
+
 		tasks, err := db.GetAllTasks()
 		if err != nil {
-			fmt.Println("Something went wrong:", err)
 			return
 		}
 		for _, id := range ids {

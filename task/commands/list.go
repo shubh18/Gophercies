@@ -2,7 +2,6 @@ package commands
 
 import (
 	"fmt"
-	"os"
 	"task/db"
 
 	"github.com/spf13/cobra"
@@ -18,7 +17,7 @@ var listCommand = &cobra.Command{
 		tasks, err := db.GetAllTasks()
 		if err != nil {
 			fmt.Println("Error displaying tasks:", err.Error())
-			os.Exit(1)
+			return
 		}
 		if len(tasks) == 0 {
 			fmt.Printf("No tasks to finish\n")
