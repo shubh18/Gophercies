@@ -32,7 +32,6 @@ func SourceCodeHandler(w http.ResponseWriter, r *http.Request) {
 	buffer := bytes.NewBuffer(nil)
 	_, err = io.Copy(buffer, file)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 	var lines [][2]int
@@ -42,9 +41,6 @@ func SourceCodeHandler(w http.ResponseWriter, r *http.Request) {
 	lexer := lexers.Get("go")
 	iterator, err := lexer.Tokenise(nil, buffer.String())
 	style := styles.Get("dracula")
-	if style == nil {
-		style = styles.Fallback
-	}
 	formatter := html.New(html.TabWidth(2), html.HighlightLines(lines))
 	w.Header().Set("Content-Type", "text/html")
 	formatter.Format(w, style, iterator)
@@ -69,12 +65,6 @@ func Middleware(handler http.Handler) http.HandlerFunc {
 
 //PanicHandler to handle panic function
 func PanicHandler(w http.ResponseWriter, r *http.Request) {
-	PanicFunction()
-}
-
-//PanicAfterHandler to handle response after panic
-func PanicAfterHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "<h1>Recover</h1>")
 	PanicFunction()
 }
 
