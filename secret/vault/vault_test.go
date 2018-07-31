@@ -1,6 +1,7 @@
 package secret
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -9,41 +10,75 @@ import (
 
 func secretpath() string {
 	home, _ := homedir.Dir()
-	return filepath.Join(home, ".test.secrets")
+	return filepath.Join(home, "test.txt")
 }
+
 func TestSet(t *testing.T) {
-	testSuit := []struct {
-		encodingKey string
-		filepath    string
-		key         string
-		plainText   string
-	}{
-		{encodingKey: "demokey", filepath: secretpath(), key: "secret", plainText: "hello"},
+	file := secretpath()
+	vault := NewVault("demo", file)
+	err := vault.SetKey("hello", "testing")
+	if err != nil {
+		t.Error("Expected nil but got", err)
 	}
-	for _, test := range testSuit {
-		v := NewVault(test.encodingKey, test.filepath)
-		err := v.SetKey(test.key, test.plainText)
-		if err != nil {
-			t.Error("error in Set")
-		}
+}
+func TestSetNegative(t *testing.T) {
+	file := secretpath()
+	vault := NewVault("", file)
+	err := vault.SetKey("demo", "testing")
+	if err == nil {
+		t.Error("Expected  Error but got nil")
 	}
 }
 
 func TestGet(t *testing.T) {
-	testSuit := []struct {
-		encodingKey string
-		filepath    string
-		key         string
-		plainText   string
-	}{
-		{encodingKey: "demokey", filepath: secretpath(), key: "secret", plainText: "hello"},
-		{encodingKey: "demokey", filepath: secretpath(), key: "picasso", plainText: ""},
+	file := secretpath()
+	vault := NewVault("demo", file)
+	_, err := vault.GetValue("hello")
+	if err != nil {
+		t.Error("Expected nil but got", err)
 	}
-	for _, test := range testSuit {
-		v := NewVault(test.encodingKey, test.filepath)
-		plainText, _ := v.GetValue(test.key)
-		if plainText != test.plainText {
-			t.Error("error in Get")
-		}
+}
+func TestGetNegative(t *testing.T) {
+	file := secretpath()
+	vault := NewVault("demo", file)
+	_, err := vault.GetValue("abc")
+	if err == nil {
+		t.Error("Expected Error but got nil")
 	}
+	vault = NewVault("", file)
+	_, err = vault.GetValue("abc")
+	if err == nil {
+		t.Error("Expected Error but got nil ")
+	}
+}
+
+func TestLoad(t *testing.T) {
+	file := secretpath()
+	vault := NewVault("demo", file)
+	err := vault.load()
+	if err != nil {
+		t.Error("Expected nil but got", err)
+	}
+}
+
+func TestLoadNegative(t *testing.T) {
+	file := secretpath()
+	vault := NewVault("", file)
+	err := vault.load()
+	if err == nil {
+		t.Error("Expected error but got nil")
+	}
+}
+func TestSave(t *testing.T) {
+	var v Vault
+	err := v.save()
+	if err == nil {
+		t.Error("Expected error but got nil ")
+	}
+	deleteFile()
+}
+
+func deleteFile() {
+	file := secretpath()
+	os.Remove(file)
 }
