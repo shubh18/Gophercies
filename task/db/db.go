@@ -59,10 +59,8 @@ func GetAllTasks() ([]Task, error) {
 		}
 		return nil
 	})
-	if err != nil {
-		return nil, err
-	}
-	return tasks, nil
+
+	return tasks, err
 }
 
 //DeleteTasks delete tasks by id

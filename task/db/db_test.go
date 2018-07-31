@@ -66,3 +66,52 @@ func TestByteToInt(t *testing.T) {
 		t.Error("Expected int got", val)
 	}
 }
+
+/*
+func TestAddTask(t *testing.T) {
+	DbPath := "/home/gslab/tasks.db"
+	db, _ := InitDB(DbPath)
+	err := CreateTask("testing123")
+	if err != nil {
+		t.Errorf("Expected result No error, But got Error %v", err)
+	}
+	db.Close()
+}
+
+func TestInit(t *testing.T) {
+	DbPath := "/home/gslab/tasks.db"
+	db, err := InitDB(DbPath)
+	if err != nil {
+		t.Errorf("Expected result No error, But got Error %v", err)
+	}
+	db.Close()
+}
+
+func TestInitNegative(t *testing.T) {
+	DbPath := "/home/gslab123/tasks.db"
+	_, err := InitDB(DbPath)
+	if err == nil {
+		t.Errorf("Expected result error, But got NO Error")
+	}
+}
+
+func TestListTasks(t *testing.T) {
+	DbPath := "/home/gslab/tasks.db"
+	db, _ := InitDB(DbPath)
+	_, err := GetAllTasks()
+	if err != nil {
+		t.Errorf("Expected result No error, But got Error %v", err)
+	}
+	db.Close()
+}
+
+func TestDeleteTask(t *testing.T) {
+	DbPath := "/home/gslab/tasks.db"
+	db, _ := InitDB(DbPath)
+	err := DeleteTasks(10)
+	if err != nil {
+		t.Errorf("Expected result No error, But got Error %v", err)
+	}
+	db.Close()
+}
+*/
