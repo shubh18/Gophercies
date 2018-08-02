@@ -18,17 +18,8 @@ func TestM(t *testing.T) {
 	main()
 }
 
-func clearFile() {
-	dir, _ := homedir.Dir()
-	dir = dir + "/task_db.db"
-	file, _ := os.OpenFile(dir, os.O_TRUNC, 0666)
-	file.Truncate(0)
-	file.Close()
-}
-
 func TestMain(m *testing.M) {
-	clearFile()
 	dashtest.ControlCoverage(m)
 	m.Run()
-	clearFile()
+	
 }
