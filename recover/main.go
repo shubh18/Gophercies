@@ -6,9 +6,11 @@ import (
 	m "recover/Middleware"
 )
 
+var listenAndServeFunc = http.ListenAndServe
+
 func main() {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/debug/", m.SourceCodeHandler)
 	mux.HandleFunc("/panic/", m.PanicHandler)
-	log.Fatal(http.ListenAndServe(":8000", m.Middleware(mux)))
+	log.Fatal(listenAndServeFunc(":8000", m.Middleware(mux)))
 }

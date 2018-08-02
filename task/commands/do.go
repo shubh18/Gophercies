@@ -23,10 +23,9 @@ var doCommand = &cobra.Command{
 			}
 			ids = append(ids, id)
 		}
-
 		tasks, err := db.GetAllTasks()
 		if err != nil {
-			return
+			fmt.Println("error occured")
 		}
 		for _, id := range ids {
 			if id <= 0 || id > len(tasks) {
@@ -37,7 +36,7 @@ var doCommand = &cobra.Command{
 			err := db.DeleteTasks(task.Key)
 			fmt.Println(id)
 			if err != nil {
-				fmt.Printf("Failed to mark \"%d\" as completed. Error: %s\n", id, err)
+				fmt.Println("Failed to delete", err)
 			} else {
 				fmt.Printf("Marked \"%d\" as completed.\n", id)
 			}

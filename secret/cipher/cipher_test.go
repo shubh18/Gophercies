@@ -7,6 +7,7 @@ import (
 	"sync"
 	"testing"
 
+	"github.com/CloudBroker/dash_utils/dashtest"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -67,4 +68,7 @@ func TestDecryptReaderNegative(t *testing.T) {
 		t.Error("Expected error but got no error")
 	}
 	os.Remove(file)
+}
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
 }

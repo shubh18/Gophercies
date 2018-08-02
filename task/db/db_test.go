@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/CloudBroker/dash_utils/dashtest"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -115,3 +116,6 @@ func TestDeleteTask(t *testing.T) {
 	db.Close()
 }
 */
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
+}

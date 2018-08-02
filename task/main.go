@@ -1,21 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"path/filepath"
-	"task/commands"
+	"secret/cli/cmd"
+
 	"task/db"
 
-	homedir "github.com/mitchellh/go-homedir"
+	"github.com/mitchellh/go-homedir"
 )
 
 func main() {
-	home, _ := homedir.Dir()
-	DbPath := filepath.Join(home, "cmd.db")
-	_, err := db.InitDB(DbPath)
-	if err != nil {
-		fmt.Println(err)
-	}
-	commands.RootCmd.Execute()
+	initApp()
+}
 
+func initApp() error {
+	h, _ := homedir.Dir()
+	dbPath := filepath.Join(h, "tasks.db")
+	_, err := db.InitDB(dbPath)
+	cmd.RootCmd.Execute()
+	return err
 }

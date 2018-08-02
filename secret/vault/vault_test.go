@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/CloudBroker/dash_utils/dashtest"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -83,4 +84,7 @@ func TestSave(t *testing.T) {
 func deleteFile() {
 	file := secretpath()
 	os.Remove(file)
+}
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
 }

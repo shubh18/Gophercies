@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/CloudBroker/dash_utils/dashtest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -50,4 +51,7 @@ func TestGetCommandNegative(t *testing.T) {
 	os.Stdout = oldStdout
 	fmt.Println(string(content))
 	file.Close()
+}
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
 }

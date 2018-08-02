@@ -3,6 +3,8 @@ package hyperlink
 import (
 	"runtime/debug"
 	"testing"
+
+	"github.com/CloudBroker/dash_utils/dashtest"
 )
 
 func TestCreateLinks(t *testing.T) {
@@ -11,4 +13,7 @@ func TestCreateLinks(t *testing.T) {
 	if link == "" {
 		t.Error("Expected link got", link)
 	}
+}
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
 }

@@ -4,6 +4,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/CloudBroker/dash_utils/dashtest"
 )
 
 func TestSourceCodeHandler(t *testing.T) {
@@ -56,4 +58,7 @@ func executeRequest(method string, url string, handler http.Handler) (*httptest.
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 	return rr, err
+}
+func TestMain(m *testing.M) {
+	dashtest.ControlCoverage(m)
 }
