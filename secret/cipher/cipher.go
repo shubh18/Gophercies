@@ -26,10 +26,11 @@ func EncryptWriter(key string, w io.Writer) (*cipher.StreamWriter, error) {
 	io.ReadFull(rand.Reader, iv)
 	stream, _ := encryptStream(key, iv)
 	n, err := w.Write(iv)
-	if n != len(iv) || err != nil {
-		return nil, errors.New("encrypt: unable to write full iv to writer")
+	if n == len(iv) || err == nil {
+		return &cipher.StreamWriter{S: stream, W: w}, nil
+
 	}
-	return &cipher.StreamWriter{S: stream, W: w}, nil
+	return nil, errors.New("encrypt: unable to write full iv to writer")
 }
 
 func decryptStream(key string, iv []byte) (cipher.Stream, error) {

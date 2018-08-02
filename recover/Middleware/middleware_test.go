@@ -59,6 +59,7 @@ func executeRequest(method string, url string, handler http.Handler) (*httptest.
 	handler.ServeHTTP(rr, req)
 	return rr, err
 }
+
 func TestMain(m *testing.M) {
 	dashtest.ControlCoverage(m)
 }

@@ -69,6 +69,7 @@ func TestDecryptReaderNegative(t *testing.T) {
 	}
 	os.Remove(file)
 }
+
 func TestMain(m *testing.M) {
 	dashtest.ControlCoverage(m)
 }

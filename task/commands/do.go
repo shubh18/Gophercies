@@ -34,12 +34,12 @@ var doCommand = &cobra.Command{
 			}
 			task := tasks[id-1]
 			err := db.DeleteTasks(task.Key)
-			fmt.Println(id)
-			if err != nil {
-				fmt.Println("Failed to delete", err)
-			} else {
-				fmt.Printf("Marked \"%d\" as completed.\n", id)
+			msg := "Failed to delete"
+			if err == nil {
+				msg = fmt.Sprintf("Marked \"%d\" as completed.\n", id)
 			}
+			fmt.Printf(msg)
+
 		}
 	},
 }
