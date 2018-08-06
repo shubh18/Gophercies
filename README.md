@@ -11,7 +11,7 @@ hyperlink ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/rec
 main ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cli/coverage.svg)<br>
 vault ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/vault/coverage.svg)<br>
 commands ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cli/cmd/coverage.svg)<br>
-cipher ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cipher/coverage.svg)<br>
+cipher ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cipher/coverage.svg)<br><br>
 4.Image Transformation<br>
 main ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/image/coverage.svg)<br>
 primitive ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/image/primitive/coverage.svg)<br>
