@@ -7,7 +7,7 @@ commands ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/task
 main ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/recover/coverage.svg)<br>
 middleware ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/recover/Middleware/coverage.svg)<br>
 hyperlink ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/recover/Hyperlink/coverage.svg)<br><br>
-3.Secret<br>
+3.Secret CLI<br>
 main ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cli/coverage.svg)<br>
 vault ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/vault/coverage.svg)<br>
 commands ![alt coverage](https://github.com/shubh18/Gophercises/blob/master/secret/cli/cmd/coverage.svg)<br>
