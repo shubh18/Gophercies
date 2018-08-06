@@ -11,9 +11,9 @@ import (
 )
 
 func TestM(t *testing.T) {
-	tmplistenAndServe := listenAndServeFunc
+	templistenAndServe := listenAndServeFunc
 	defer func() {
-		listenAndServeFunc = tmplistenAndServe
+		listenAndServeFunc = templistenAndServe
 	}()
 	listenAndServeFunc = func(port string, hanle http.Handler) error {
 		panic("testing")

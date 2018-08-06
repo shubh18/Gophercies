@@ -31,19 +31,19 @@ func SourceCodeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	buffer := bytes.NewBuffer(nil)
 	_, err = io.Copy(buffer, file)
-	if err != nil {
-		return
+	if err == nil {
+		var lines [][2]int
+		if line > 0 {
+			lines = append(lines, [2]int{line, line})
+		}
+		lexer := lexers.Get("go")
+		iterator, _ := lexer.Tokenise(nil, buffer.String())
+		style := styles.Get("dracula")
+		formatter := html.New(html.TabWidth(2), html.HighlightLines(lines))
+		w.Header().Set("Content-Type", "text/html")
+		formatter.Format(w, style, iterator)
 	}
-	var lines [][2]int
-	if line > 0 {
-		lines = append(lines, [2]int{line, line})
-	}
-	lexer := lexers.Get("go")
-	iterator, err := lexer.Tokenise(nil, buffer.String())
-	style := styles.Get("dracula")
-	formatter := html.New(html.TabWidth(2), html.HighlightLines(lines))
-	w.Header().Set("Content-Type", "text/html")
-	formatter.Format(w, style, iterator)
+
 }
 
 //Middleware to recover panics from program
