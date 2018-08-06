@@ -34,9 +34,9 @@ func TestDecryptReader(t *testing.T) {
 		v.keyValues = make(map[string]string)
 	}
 	defer f.Close()
-	reader, err := DecryptReader("test", f)
+	_, err = DecryptReader("test", f)
 	if err != nil {
-		t.Error("Expected reader got", reader)
+		t.Error("Expected reader got", err)
 	}
 
 }
@@ -50,9 +50,9 @@ func TestEncryptWriter(t *testing.T) {
 		fmt.Println("TestEncryptWriter:", err)
 	}
 	defer f.Close()
-	writer, err := EncryptWriter(v.encodingKey, f)
+	_, err = EncryptWriter(v.encodingKey, f)
 	if err != nil {
-		t.Error("Expected Writer got", writer)
+		t.Error("Expected Writer got", err)
 	}
 
 }
@@ -68,6 +68,22 @@ func TestDecryptReaderNegative(t *testing.T) {
 		t.Error("Expected error but got no error")
 	}
 	os.Remove(file)
+}
+
+func TestEncryptWriterNegative(t *testing.T) {
+	home, _ := homedir.Dir()
+	file := filepath.Join(home, ".test.secrets")
+	v := NewVault("test", file)
+	f, err := os.OpenFile(v.filepath, os.O_RDWR|os.O_CREATE, 0755)
+	if err != nil {
+		fmt.Println("TestEncryptWriter:", err)
+	}
+	defer f.Close()
+	writer, err := EncryptWriter("", f)
+	if err != nil {
+		t.Error("Expected Writer got", writer)
+	}
+
 }
 
 func TestMain(m *testing.M) {

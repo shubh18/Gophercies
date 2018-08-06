@@ -22,15 +22,15 @@ func encryptStream(key string, iv []byte) (cipher.Stream, error) {
 // EncryptWriter will return a writer that will write encrypted data to
 // the original writer.
 func EncryptWriter(key string, w io.Writer) (*cipher.StreamWriter, error) {
+	var streamWriter *cipher.StreamWriter
 	iv := make([]byte, aes.BlockSize)
 	io.ReadFull(rand.Reader, iv)
 	stream, _ := encryptStream(key, iv)
-	n, err := w.Write(iv)
-	if n == len(iv) || err == nil {
-		return &cipher.StreamWriter{S: stream, W: w}, nil
-
+	_, err := w.Write(iv)
+	if err == nil {
+		streamWriter = &cipher.StreamWriter{S: stream, W: w}
 	}
-	return nil, errors.New("encrypt: unable to write full iv to writer")
+	return streamWriter, err
 }
 
 func decryptStream(key string, iv []byte) (cipher.Stream, error) {
